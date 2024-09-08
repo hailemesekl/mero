@@ -1,0 +1,148 @@
+<?php
+include('one.php');
+$eroro_photo = "";
+if($_SERVER['REQUEST_METHOD'] === 'POST'){
+     $post_one = $_POST['post1'];
+
+     $img = $_FILES['img']['name'];
+     $img_temp = $_FILES['img']['tmp_name'];
+     $img_size = $_FILES['img']['size'];
+         
+     if(!empty($_FILES['img']['name']) && !empty($_POST['post1'])){
+         if($img_size < 10000000){
+                $folde = "img/". $img;
+                move_uploaded_file($img_temp,$folde) ;
+                $sql = "insert into phot(imag) values('$img')";
+                $res = mysqli_query($conn,$sql);
+                if($res){
+                      //echo "sefull Image";
+                      header("location:homeEdit22.php");
+                } else{
+                      $eroro_photo = "not image secefull";
+                }
+         }
+               
+    
+           
+     }else{
+         if(!empty($_POST['post1']) && empty($_FILES['img']['name'])){
+          $folde = "img/". $img;
+          move_uploaded_file($img_temp,$folde) ;
+              $sql = "insert into phot(post) values('$post_one')";
+              $res = mysqli_query($conn,$sql);
+              if($res){
+                  //echo "sefull post1";
+                  header("location:homeEdit22.php");
+              } else{
+                  echo "not post1";
+              }
+         }else{
+             if(!empty($_POST['post1']) && !empty($_FILES['img']['name'])){
+                           
+                $sql ="insert into phot(post,imag) values('$post_one','$img')";
+                $res = mysqli_query($conn,$sql);
+                if($res){
+                       //echo "sefull image and post1";
+                       header("location:homeEdit22.php");
+                } else{
+                      echo "not image and post1";
+                }
+             }else{
+                 $eroro_photo = "please inser photo or text!!";
+             }
+         }
+     }
+        
+     
+
+     }
+     
+      
+     
+
+?>
+
+
+
+
+
+   
+<!-- display image-->
+
+<div class="container mt-5" >
+    <div class="row">
+
+<?php
+include("one.php");
+  
+$sql = "select * from phot order by id desc";
+$res = mysqli_query($conn,$sql);
+if($res){
+    while($row=mysqli_fetch_assoc($res)){
+        $post1 = $row['post'];
+        $im = $row['imag'];
+        if($im < 0){
+              echo "
+              
+              
+                 <div class='col-md-4'>
+        <div class='thumbnail'>
+          
+          
+            <div class='caption' style='border-bottom:5px double black; margin-bottom:40px;'>
+              <p>$row[post]</p>
+              <a href='#' id='edit-text-one'>Edit</a>
+              <p> date:$row[date]</p>
+            </div>
+          </a>
+        </div>
+      </div>
+              
+              
+              ";
+
+
+        }elseif($im > 0 && $post1 > 0){
+             echo "
+         
+                 
+
+
+
+
+
+                 <div class='col-md-4'>
+        <div class='thumbnail'>
+          
+            <img src='img./$row[imag]' alt='Lights' style='width:100%'>
+              
+           
+
+            <div class='caption' style='border-bottom:5px double red; margin-bottom:40px;'>
+              <p class='mt-3'>$row[post]</p>
+                
+           
+
+              <p> date:$row[date]</p>
+            </div>
+          </a>
+        </div>
+      </div>
+             
+             ";
+        }
+    }
+}
+
+?>
+<img src="" alt="">
+
+
+
+echo " <img src='img./$row[imag]' alt=''>";
+
+
+<h1>$row[post]</h1>
+
+
+$sql = "UPDATE phot SET post='$post_one', imag ='$img' where id = $id";
